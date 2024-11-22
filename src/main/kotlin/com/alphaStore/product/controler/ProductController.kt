@@ -6,15 +6,12 @@ import com.alphaStore.product.service.ProductService
 import com.alphaStore.product.model.PaginationResponse
 import com.alphaStore.product.reqres.FilterOption
 import org.springframework.web.bind.annotation.RestController
-
-
 import org.springframework.web.bind.annotation.*
-import org.springframework.beans.factory.annotation.Autowired
 import java.net.URLDecoder
 
 @RestController
 @RequestMapping("/product")
-class ProductController @Autowired constructor(
+class ProductController (
     private val productService: ProductService
 ) {
 
@@ -70,8 +67,8 @@ class ProductController @Autowired constructor(
         var pageSizeFinal = 5
         limit?.let {
             pageSizeFinal =
-                if (it > 10)
-                    10
+                if (it > 20)
+                    20
                 else
                     it
         }

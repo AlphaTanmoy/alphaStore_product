@@ -44,10 +44,10 @@ class ProductService(
         var offsetDateFinal: ZonedDateTime? = null
         var offsetId = ""
 
-        offsetToken?.let { offsetTokenPositive ->
+        offsetToken?.let {
             val decrypted = encryptionMaster.decrypt(
                 encodingUtilContract.decode(
-                    offsetTokenPositive
+                    it
                 ),
             )
             val splits = decrypted.split("::")
@@ -71,15 +71,15 @@ class ProductService(
             }
         }
 
-        val toReturnAllProducts: ArrayList<ProductListMinifiedImpl> = ArrayList()
-        var giveCountData = 0L
-
         offsetDateFinal ?: run {
             return PaginationResponse(
                 arrayListOf(),
                 filterUsed = toRetFilterOption,
             )
         }
+
+        val toReturnAllProducts: ArrayList<ProductListMinifiedImpl> = ArrayList()
+        var giveCountData = 0L
 
         if (giveCount) {
             val allUserCount =
@@ -156,9 +156,7 @@ class ProductService(
                 )
             } else {
                 return PaginationResponse(
-                    data = ConverterStringToObjectList.sanitizeForOutput<ProductListMinifiedImpl>(
-                        toReturnAllProducts
-                    ),
+                    ConverterStringToObjectList.sanitizeForOutput(ArrayList(toReturnAllProducts)),
                     filterUsed = toRetFilterOption,
                     offsetToken = encodingUtilContract.encode(
                         encryptionMaster.encrypt(
@@ -175,8 +173,7 @@ class ProductService(
         } else {
             return PaginationResponse(
                 filterUsed = toRetFilterOption,
-                recordCount = giveCountData.toInt(),
-                data = toReturnAllProducts
+                recordCount = giveCountData.toInt()
             )
         }
     }

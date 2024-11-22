@@ -32,7 +32,7 @@ class EnumController {
                 EnumOption(
                     name = it.name,
                     description = it.nameDescriptor,
-                    category = "EnumOption"
+                    category = "DateRangeType"
                 )
             )
         }
@@ -42,7 +42,7 @@ class EnumController {
                 EnumOption(
                     name = it.name,
                     description = it.nameDescriptor,
-                    category = "EnumOption"
+                    category = "ProductMainCategory"
                 )
             )
         }
@@ -52,7 +52,7 @@ class EnumController {
                 EnumOption(
                     name = it.name,
                     description = it.nameDescriptor,
-                    category = "EnumOption"
+                    category = "ProductSubCategory"
                 )
             )
         }

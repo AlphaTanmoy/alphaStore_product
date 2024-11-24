@@ -31,7 +31,7 @@ class ProductService(
 
     fun createProduct(product: Product): Product {
         try{
-            val merchantId = product.merchant
+            val merchantId = product.merchantId
             val response = restTemplate.getForEntity("$merchantServiceUrl/$merchantId", MerchantResponse::class.java)
 
             if (!response.statusCode.is2xxSuccessful || response.body == null) {

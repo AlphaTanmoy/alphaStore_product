@@ -38,7 +38,7 @@ data class Product(
     @Column(nullable = false)
     val productSubCategory: ProductSubCategory,
 
-    var merchant: String = ""
+    var merchantId: String = ""
 ) : SuperEntityWithIdCreatedLastModifiedDataStatus()
 
 

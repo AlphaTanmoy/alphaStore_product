@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
+import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
@@ -17,6 +18,53 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestController
 class CustomResponseEntityHandler : ResponseEntityExceptionHandler() {
 
+    @ExceptionHandler(GenericException::class)
+    fun handleGenericException(ex: GenericException, webRequest: WebRequest): ResponseEntity<Any> {
+        return ResponseEntity(
+            GenericResponse(
+                code = ex.code,
+                message = if (ex.errorMessage != "") ex.errorMessage else "bad request",
+                responseType = ResponseType.FAIL
+            ),
+            HttpStatus.valueOf(ex.code)
+        )
+    }
+
+
+
+    @ExceptionHandler(BadRequestException::class)
+    fun handleBadRequestException(ex: BadRequestException, webRequest: WebRequest): ResponseEntity<Any> {
+        ex.code?.let { code ->
+            ex.type?.let { type ->
+                return ResponseEntity(
+                    GenericResponse(
+                        code = code,
+                        message = if (ex.errorMessage != "") ex.errorMessage else "bad request",
+                        responseType = ResponseType.FAIL,
+                        type = type
+                    ),
+                    HttpStatus.BAD_REQUEST
+                )
+            } ?: run {
+                return ResponseEntity(
+                    GenericResponse(
+                        code = code,
+                        message = if (ex.errorMessage != "") ex.errorMessage else "bad request",
+                        responseType = ResponseType.FAIL
+                    ),
+                    HttpStatus.BAD_REQUEST
+                )
+            }
+        }
+        return ResponseEntity(
+            GenericResponse(
+                code = HttpStatus.BAD_REQUEST.value(),
+                message = if (ex.errorMessage != "") ex.errorMessage else "bad request",
+                responseType = ResponseType.FAIL
+            ),
+            HttpStatus.BAD_REQUEST
+        )
+    }
 
     override fun handleMethodArgumentNotValid(
         ex: MethodArgumentNotValidException,

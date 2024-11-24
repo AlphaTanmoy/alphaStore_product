@@ -1,9 +1,6 @@
 package com.alphaStore.product.controler
 
-import com.alphaStore.product.enums.DataStatus
-import com.alphaStore.product.enums.DateRangeType
-import com.alphaStore.product.enums.ProductMainCategory
-import com.alphaStore.product.enums.ProductSubCategory
+import com.alphaStore.product.enums.*
 import com.alphaStore.product.model.PaginationResponse
 import com.alphaStore.product.reqres.EnumOption
 import org.springframework.web.bind.annotation.GetMapping
@@ -53,6 +50,16 @@ class EnumController {
                     name = it.name,
                     description = it.nameDescriptor,
                     category = "ProductSubCategory"
+                )
+            )
+        }
+
+        ResponseType.entries.forEach{
+            toRet.add(
+                EnumOption(
+                    name = it.name,
+                    description = it.nameDescriptor,
+                    category = "ResponseType"
                 )
             )
         }

@@ -59,6 +59,7 @@ interface ProductRepo : JpaRepository<Product, String> {
                 "p.number_of_products_present_at_store as numberOfProductsPresentAtStore, " +
                 "p.product_price as productPrice, " +
                 "p.created_date as createdDate, " +
+                "CAST(p.merchant AS VARCHAR) as merchantId, "+
                 "p.data_status as status " +
                 "FROM product_table p " +
                 "WHERE (p.id SIMILAR TO :queryString OR p.product_name SIMILAR TO :queryString) " +
@@ -84,6 +85,7 @@ interface ProductRepo : JpaRepository<Product, String> {
                 "p.number_of_products_present_at_store as numberOfProductsPresentAtStore, " +
                 "p.product_price as productPrice, " +
                 "p.created_date as createdDate, " +
+                "CAST(p.merchant AS VARCHAR) as merchantId, "+
                 "p.data_status as status " +
                 "FROM product_table p " +
                 "WHERE p.created_date > :offsetDate " +
@@ -114,6 +116,7 @@ interface ProductRepo : JpaRepository<Product, String> {
                 "p.number_of_products_present_at_store as numberOfProductsPresentAtStore, " +
                 "p.product_price as productPrice, " +
                 "p.created_date as createdDate, " +
+                "CAST(p.merchant AS VARCHAR) as merchantId, "+
                 "p.data_status as status " +
                 "FROM product_table p " +
                 "WHERE p.id > :offsetId " +

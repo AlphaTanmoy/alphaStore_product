@@ -62,7 +62,8 @@ class ProductRepoAggregator(
                     productMainCategory = toMap.productMainCategory,
                     productSubCategory = toMap.productSubCategory,
                     createdDate = toMap.createdDate,
-                    status = toMap.status
+                    status = toMap.status,
+                    merchantId = toMap.merchantId
                 )
             }.toCollection(ArrayList())
         return AggregatorListResponse(data = resultFromDb, databaseAccessLogId)
@@ -95,7 +96,8 @@ class ProductRepoAggregator(
                     productMainCategory = toMap.productMainCategory,
                     productSubCategory = toMap.productSubCategory,
                     createdDate = toMap.createdDate,
-                    status = toMap.status
+                    status = toMap.status,
+                    merchantId = toMap.merchantId
                 )
             }.toCollection(ArrayList())
         return AggregatorListResponse(data = resultFromDb, databaseAccessLogId)
@@ -130,7 +132,8 @@ class ProductRepoAggregator(
                     productMainCategory = toMap.productMainCategory,
                     productSubCategory = toMap.productSubCategory,
                     createdDate = toMap.createdDate,
-                    status = toMap.status
+                    status = toMap.status,
+                    merchantId = toMap.merchantId
                 )
             }.toCollection(ArrayList())
         return AggregatorListResponse(data = resultFromDb, databaseAccessLogId)

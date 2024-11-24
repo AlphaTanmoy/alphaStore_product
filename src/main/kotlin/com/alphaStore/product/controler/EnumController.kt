@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 class EnumController {
 
     @GetMapping("/enums")
-    fun getDataStatus(): PaginationResponse<EnumOption> {
+    fun getAllEnums(): PaginationResponse<EnumOption> {
         val toRet: ArrayList<EnumOption> = ArrayList()
         DataStatus.entries.forEach {
             toRet.add(
@@ -64,6 +64,81 @@ class EnumController {
             )
         }
 
+        return PaginationResponse(data = toRet)
+    }
+
+    @GetMapping("/enums/fataStatus")
+    fun getDataStatus(): PaginationResponse<EnumOption>{
+        val toRet: ArrayList<EnumOption> = ArrayList()
+        DataStatus.entries.forEach {
+            toRet.add(
+                EnumOption(
+                    name = it.name,
+                    description = it.nameDescriptor,
+                    category = "DataStatus"
+                )
+            )
+        }
+        return PaginationResponse(data = toRet)
+    }
+
+    @GetMapping("/enums/pateRangeType")
+    fun getDateRangeType(): PaginationResponse<EnumOption>{
+        val toRet: ArrayList<EnumOption> = ArrayList()
+        DateRangeType.entries.forEach {
+            toRet.add(
+                EnumOption(
+                    name = it.name,
+                    description = it.nameDescriptor,
+                    category = "DateRangeType"
+                )
+            )
+        }
+        return PaginationResponse(data = toRet)
+    }
+
+    @GetMapping("/enums/productMainCategory")
+    fun getProductMainCategory(): PaginationResponse<EnumOption>{
+        val toRet: ArrayList<EnumOption> = ArrayList()
+        ProductMainCategory.entries.forEach {
+            toRet.add(
+                EnumOption(
+                    name = it.name,
+                    description = it.nameDescriptor,
+                    category = "ProductMainCategory"
+                )
+            )
+        }
+        return PaginationResponse(data = toRet)
+    }
+
+    @GetMapping("/enums/ProductSubCategory")
+    fun getProductSubCategory(): PaginationResponse<EnumOption>{
+        val toRet: ArrayList<EnumOption> = ArrayList()
+        ProductSubCategory.entries.forEach {
+            toRet.add(
+                EnumOption(
+                    name = it.name,
+                    description = it.nameDescriptor,
+                    category = "ProductSubCategory"
+                )
+            )
+        }
+        return PaginationResponse(data = toRet)
+    }
+
+    @GetMapping("/enums/responseType")
+    fun getResponseType(): PaginationResponse<EnumOption>{
+        val toRet: ArrayList<EnumOption> = ArrayList()
+        ResponseType.entries.forEach {
+            toRet.add(
+                EnumOption(
+                    name = it.name,
+                    description = it.nameDescriptor,
+                    category = "ResponseType"
+                )
+            )
+        }
         return PaginationResponse(data = toRet)
     }
 

@@ -1,13 +1,13 @@
 package com.alphaStore.product.seeders
 
-import com.alphaStore.product.contract.CountryRepo
+import com.alphaStore.product.contract.CountryRepoAggregator
 import com.alphaStore.product.entity.Country
 import com.alphaStore.product.enums.DataStatus
 import org.springframework.stereotype.Component
 
 @Component
 class CountrySeeder(
-    private val countryRepository: CountryRepo
+    private val countryRepoAggregator: CountryRepoAggregator
 ) {
 
     fun mayInsertCountryData() {
@@ -1958,13 +1958,35 @@ class CountrySeeder(
             ),
         )
 
-        countryRepository.deleteAll()
+        val toInsert: ArrayList<Country> = ArrayList()
         countries.forEach { country ->
-            val existingCountries = countryRepository.findByIdAndDataStatus(country.id, DataStatus.ACTIVE)
-
-            if (existingCountries.isEmpty()) {
-                countryRepository.save(country)
+            var shouldInsert = false
+            val resultFromDbWithKnownName = countryRepoAggregator.findByKnownNameAndDataStatus(
+                country.knownName,
+                skipCache = true,
+                dataStatus = DataStatus.ACTIVE
+            )
+            val foundCountriesByKnownName = ArrayList(
+                resultFromDbWithKnownName.data
+            )
+            if (foundCountriesByKnownName.isEmpty()) {
+                val resultFromDbWithOfficialName = countryRepoAggregator.findByOfficialNameAndDataStatus(
+                    country.officialName,
+                    skipCache = true,
+                    dataStatus = DataStatus.ACTIVE
+                )
+                val foundCountriesByOfficialName = ArrayList(
+                    resultFromDbWithOfficialName.data
+                )
+                if (foundCountriesByOfficialName.isEmpty()) {
+                    shouldInsert = true
+                }
+            }
+            if (shouldInsert) {
+                toInsert.add(country)
             }
         }
+        countryRepoAggregator.saveAll(toInsert)
+
     }
 }

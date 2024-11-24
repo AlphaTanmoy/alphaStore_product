@@ -22,6 +22,27 @@ class CountryRepoAggregator(
         countryRepo.saveAll(entities)
     }
 
+    fun findByKnownNameAndDataStatus(
+        knownName: String,
+        dataStatus: DataStatus = DataStatus.ACTIVE,
+        skipCache: Boolean,
+    ): AggregatorListResponse<Country> {
+        val databaseAccessLogId = UUID.randomUUID().toString()
+        val resultFromDb = countryRepo.findByKnownNameAndDataStatus(knownName, dataStatus)
+        return AggregatorListResponse(data = ArrayList(resultFromDb), databaseAccessLogId)
+    }
+
+    fun findByOfficialNameAndDataStatus(
+        officialName: String,
+        dataStatus: DataStatus = DataStatus.ACTIVE,
+        skipCache: Boolean
+    ): AggregatorListResponse<Country> {
+        val databaseAccessLogId = UUID.randomUUID().toString()
+        val resultFromDb = countryRepo.findByOfficialNameAndDataStatus(officialName, dataStatus)
+        return AggregatorListResponse(data = ArrayList(resultFromDb), databaseAccessLogId)
+    }
+
+
     fun findByIdAndDataStatus(
         id: String,
         dataStatus: DataStatus = DataStatus.ACTIVE,

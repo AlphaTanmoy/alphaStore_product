@@ -16,6 +16,9 @@ interface CountryRepo : JpaRepository<Country, String> {
 
     fun findByIdAndDataStatus(id: String, dataStatus: DataStatus = DataStatus.ACTIVE): List<Country>
     fun findByIsdCodeAndDataStatus(isdCode: String, dataStatus: DataStatus = DataStatus.ACTIVE): List<Country>
+    fun findByOfficialNameAndDataStatus(officialName: String, dataStatus: DataStatus = DataStatus.ACTIVE): List<Country>
+    fun findByKnownNameAndDataStatus(knownName: String, dataStatus: DataStatus = DataStatus.ACTIVE): List<Country>
+
 
     @Query(
         value = "SELECT countries.id AS id, " +

@@ -20,6 +20,14 @@ class ProductController (
         return productService.createProduct(newProduct)
     }
 
+    @GetMapping("/getByMerchantId/{merchantId}")
+    fun getProductIdByMerchantId(
+        @PathVariable merchantId: String
+    ): ArrayList<String> {
+        val result = productService.getProductIdByMerchantId(merchantId)
+        return result
+    }
+
     @GetMapping("/getAll")
     fun getAllProducts(
         @RequestParam("queryString") queryString: String? = null,

@@ -17,6 +17,12 @@ class ProductRepoAggregator(
     private val productRepo: ProductRepo,
 ) {
 
+    fun getProductIdByMerchantId(merchantId: String): ArrayList<String>{
+        val resultFromDb =
+            productRepo.getProductIdByMerchantId(merchantId)
+        return resultFromDb
+    }
+
     fun save(entity: Product): Product {
         return productRepo.save(entity)
     }

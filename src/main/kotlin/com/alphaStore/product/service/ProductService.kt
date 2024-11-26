@@ -45,6 +45,15 @@ class ProductService(
         }
     }
 
+    fun getProductIdByMerchantId(merchantId: String) : ArrayList<String>{
+
+        val productIdsToReturn = productRepoAggregator.getProductIdByMerchantId(merchantId)
+
+        if(productIdsToReturn.size == 0) return ArrayList()
+
+        return productIdsToReturn
+    }
+
     fun getProducts(
         queryString: String,
         productSubCategory: String,

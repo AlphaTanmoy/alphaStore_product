@@ -35,6 +35,16 @@ interface ProductRepo : JpaRepository<Product, String> {
     fun findTop1ByOrderByCreatedDateAsc(): List<Product>
 
     @Query(
+        value =
+        "SELECT id FROM product_table p "+
+        "WHERE p.merchant_id = :merchantId "
+        , nativeQuery = true
+    )
+    fun getProductIdByMerchantId(
+        @Param("merchantId") merchantId: String
+    ) : ArrayList<String>
+
+    @Query(
         value = "SELECT COUNT(*) FROM product_table p " +
                 "WHERE (p.id SIMILAR TO :queryString OR p.product_name SIMILAR TO :queryString) " +
                 "AND p.product_main_category SIMILAR TO :productMainCategory " +

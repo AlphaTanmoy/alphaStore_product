@@ -1,6 +1,5 @@
 package com.alphaStore.product.service
 
-import com.alphaStore.product.contract.aggregator.ProductRepoAggregator
 import com.alphaStore.product.contract.aggregator.ProductRepoAggregatorForMerchant
 import com.alphaStore.product.contract.repo.EncodingUtilContract
 import com.alphaStore.product.contract.repo.EncryptionMasterContract
@@ -12,9 +11,11 @@ import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedImpl
 import com.alphaStore.product.reqres.FilterOption
 import com.alphaStore.product.utils.ConverterStringToObjectList
 import com.alphaStore.product.utils.DateUtil
+import org.springframework.stereotype.Component
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
+@Component
 class ProductServiceForMerchant(
     private val productRepoAggregatorForMerchant: ProductRepoAggregatorForMerchant,
     private val encodingUtilContract: EncodingUtilContract,

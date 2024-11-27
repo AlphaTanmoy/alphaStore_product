@@ -10,7 +10,7 @@ import java.time.ZonedDateTime
 import java.util.*
 
 @MappedSuperclass
-class SuperEntityWithIdCreatedLastModified (
+abstract class SuperEntityWithIdCreatedLastModified (
     @Id
     var id: String = UUID.randomUUID().toString(),
     @LastModifiedDate

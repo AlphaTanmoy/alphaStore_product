@@ -1,26 +1,22 @@
 package com.alphaStore.product.service
 
-import com.alphaStore.product.feignClient.MerchantClient
+import com.alphaStore.product.contract.aggregator.ProductRepoAggregator
+import com.alphaStore.product.contract.aggregator.ProductRepoAggregatorForMerchant
 import com.alphaStore.product.contract.repo.EncodingUtilContract
 import com.alphaStore.product.contract.repo.EncryptionMasterContract
-import com.alphaStore.product.entity.Product
-import com.alphaStore.product.contract.aggregator.ProductRepoAggregator
-import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedImpl
 import com.alphaStore.product.enums.DateRangeType
 import com.alphaStore.product.error.BadRequestException
+import com.alphaStore.product.feignClient.MerchantClient
 import com.alphaStore.product.model.PaginationResponse
+import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedImpl
 import com.alphaStore.product.reqres.FilterOption
-import com.alphaStore.product.reqres.MerchantResponse
 import com.alphaStore.product.utils.ConverterStringToObjectList
 import com.alphaStore.product.utils.DateUtil
-import org.springframework.stereotype.Component
-import org.springframework.web.client.RestClientException
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-@Component
-class ProductService(
-    private val productRepoAggregator: ProductRepoAggregator,
+class ProductServiceForMerchant(
+    private val productRepoAggregatorForMerchant: ProductRepoAggregatorForMerchant,
     private val encodingUtilContract: EncodingUtilContract,
     private val encryptionMaster: EncryptionMasterContract,
     private val dateUtilContract: DateUtil,
@@ -28,23 +24,8 @@ class ProductService(
 ) {
 
 
-    fun createProduct(product: Product): Product {
-        try{
-            val merchantId = product.merchantId
-            val merchant: MerchantResponse = merchantClient.getMerchantById(merchantId)
-
-            if (merchant.id.isEmpty()) {
-                throw IllegalArgumentException("Merchant with ID $merchantId not found")
-            }
-
-            val productToReturn = productRepoAggregator.save(product)
-            return productToReturn
-        }catch (ex: RestClientException) {
-            throw IllegalStateException("Failed to validate Merchant ID: ${ex.message}")
-        }
-    }
-
-    fun getProducts(
+    fun getProductsByMerchantId(
+        merchantId: String,
         queryString: String,
         productSubCategory: String,
         productMainCategory: String,
@@ -75,7 +56,9 @@ class ProductService(
             offsetId = splits[1]
         } ?: run {
             val firstCreated =
-                productRepoAggregator.findTop1ByOrderByCreatedDateAsc()
+                productRepoAggregatorForMerchant.findTop1ByOrderByCreatedDateAscWithMerchantId(
+                    merchantId = merchantId
+                )
 
             offsetDateFinal = if (firstCreated.data.isEmpty())
                 null
@@ -99,7 +82,8 @@ class ProductService(
 
         if (giveCount) {
             val allUserCount =
-                productRepoAggregator.findCountWithOutOffsetIdAndDate(
+                productRepoAggregatorForMerchant.findCountWithOutOffsetIdAndDateWithMerchantId(
+                    merchantId = merchantId,
                     queryString = queryString,
                     productMainCategory = productMainCategory,
                     productSubCategory = productSubCategory,
@@ -112,7 +96,8 @@ class ProductService(
 
         if (giveData) {
             if (considerMaxDateRange && dateRangeType != null && dateRangeType == DateRangeType.MAX.name) {
-                val allProducts = productRepoAggregator.findDataWithOutOffsetIdAndDate(
+                val allProducts = productRepoAggregatorForMerchant.findDataWithOutOffsetIdAndDateWithMerchantId(
+                    merchantId = merchantId,
                     queryString = queryString,
                     productMainCategory = productMainCategory,
                     productSubCategory = productSubCategory,
@@ -123,7 +108,8 @@ class ProductService(
                 if (offsetId.isBlank()) {
                     val productFirstPage =
                         offsetDateFinal.let {
-                            productRepoAggregator.findDataWithOutOffsetId(
+                            productRepoAggregatorForMerchant.findDataWithOutOffsetIdWithMerchantId(
+                                merchantId = merchantId,
                                 queryString = queryString,
                                 productMainCategory = productMainCategory,
                                 productSubCategory = productSubCategory,
@@ -142,7 +128,8 @@ class ProductService(
                     toReturnAllProducts.addAll(productFirstPage.data)
                 } else {
                     val productNextPageWithSameData =
-                        productRepoAggregator.findDataWithOffsetId(
+                        productRepoAggregatorForMerchant.findDataWithOffsetIdWithMerchantId(
+                            merchantId = merchantId,
                             queryString = queryString,
                             productMainCategory = productMainCategory,
                             productSubCategory = productSubCategory,
@@ -152,7 +139,8 @@ class ProductService(
                             offsetId = offsetId
                         )
                     val nextPageSize = limit - productNextPageWithSameData.data.size
-                    val productNextPage = productRepoAggregator.findDataWithOutOffsetId(
+                    val productNextPage = productRepoAggregatorForMerchant.findDataWithOutOffsetIdWithMerchantId(
+                        merchantId = merchantId,
                         queryString = queryString,
                         productMainCategory = productMainCategory,
                         productSubCategory = productSubCategory,

@@ -1,48 +1,35 @@
 package com.alphaStore.product.contract.repo
 
 import com.alphaStore.product.entity.Product
-import com.alphaStore.product.model.minified.ProductListMinified
 import com.alphaStore.product.enums.DataStatus
-import jakarta.transaction.Transactional
+import com.alphaStore.product.model.minified.ProductListMinified
 import org.springframework.context.annotation.Primary
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import java.time.ZonedDateTime
 
 @Suppress("SqlDialectInspection", "SqlNoDataSourceInspection")
 @Primary
-interface ProductRepo : JpaRepository<Product, String> {
-
-    @Transactional
-    @Modifying(clearAutomatically = true)
-    @Query(
-        value = "DROP TABLE users CASCADE",
-        nativeQuery = true
-    )
-    fun dropTable()
+interface ProductRepoForMerchant : JpaRepository<Product, String> {
 
     @Query(
-        value = "SELECT * FROM product_table p " +
-                "WHERE p.id SIMILAR TO :queryString",
-        nativeQuery = true
+        value = "SELECT p FROM product_table p WHERE p.merchant_id = :merchantId ORDER BY p.createdDate ASC"
+        , nativeQuery = true
     )
-    fun getAllProducts(
-        @Param("queryString") queryString: String,
-    ) : List<Product>
-
-    fun findTop1ByOrderByCreatedDateAsc(): List<Product>
+    fun findTop1ByOrderByCreatedDateAscWithMerchantId(@Param("merchantId") merchantId: String): List<Product>
 
     @Query(
         value = "SELECT COUNT(*) FROM product_table p " +
-                "WHERE (p.id SIMILAR TO :queryString OR p.product_name SIMILAR TO :queryString) " +
+                "WHERE p.merchant_id = :merchantId " +
+                "(p.id SIMILAR TO :queryString OR p.product_name SIMILAR TO :queryString) " +
                 "AND p.product_main_category SIMILAR TO :productMainCategory " +
                 "AND p.product_sub_category SIMILAR TO :productSubCategory " +
                 "AND (CASE WHEN :isActiveRequired THEN p.data_status = :#{#dataStatus.name()} ELSE TRUE END)",
         nativeQuery = true
     )
-    fun findCountWithOutOffsetIdAndDate(
+    fun findCountWithOutOffsetIdAndDateWithMerchantId(
+        @Param("merchantId") merchantId: String,
         @Param("queryString") queryString: String,
         @Param("productMainCategory") productMainCategory: String,
         @Param("productSubCategory") productSubCategory: String,
@@ -59,16 +46,18 @@ interface ProductRepo : JpaRepository<Product, String> {
                 "p.number_of_products_present_at_store as numberOfProductsPresentAtStore, " +
                 "p.product_price as productPrice, " +
                 "p.created_date as createdDate, " +
-                "CAST(p.merchant_id AS VARCHAR) as merchantId, "+
+                "CAST(p.merchant_id AS VARCHAR) as merchantId, " +
                 "p.data_status as status " +
                 "FROM product_table p " +
-                "WHERE (p.id SIMILAR TO :queryString OR p.product_name SIMILAR TO :queryString) " +
+                "WHERE p.merchant_id = :merchantId " +
+                "AND (p.id SIMILAR TO :queryString OR p.product_name SIMILAR TO :queryString) " +
                 "AND p.product_main_category SIMILAR TO :productMainCategory " +
                 "AND p.product_sub_category SIMILAR TO :productSubCategory " +
                 "AND (CASE WHEN :isActiveRequired THEN p.data_status = :#{#dataStatus.name()} ELSE TRUE END)",
         nativeQuery = true
     )
-    fun findDataWithOutOffsetIdAndDate(
+    fun findDataWithOutOffsetIdAndDateWithMerchantId(
+        @Param("merchantId") merchantId: String,
         @Param("queryString") queryString: String,
         @Param("productMainCategory") productMainCategory: String,
         @Param("productSubCategory") productSubCategory: String,
@@ -85,10 +74,11 @@ interface ProductRepo : JpaRepository<Product, String> {
                 "p.number_of_products_present_at_store as numberOfProductsPresentAtStore, " +
                 "p.product_price as productPrice, " +
                 "p.created_date as createdDate, " +
-                "CAST(p.merchant_id AS VARCHAR) as merchantId, "+
+                "CAST(p.merchant_id AS VARCHAR) as merchantId, " +
                 "p.data_status as status " +
                 "FROM product_table p " +
-                "WHERE p.created_date > :offsetDate " +
+                "WHERE p.merchant_id = :merchantId " +
+                "AND p.created_date > :offsetDate " +
                 "AND (p.id SIMILAR TO :queryString OR p.product_name SIMILAR TO :queryString) " +
                 "AND p.product_main_category SIMILAR TO :productMainCategory " +
                 "AND p.product_sub_category SIMILAR TO :productSubCategory " +
@@ -97,7 +87,8 @@ interface ProductRepo : JpaRepository<Product, String> {
                 "LIMIT :limit",
         nativeQuery = true
     )
-    fun findDataWithOutOffsetId(
+    fun findDataWithOutOffsetIdWithMerchantId(
+        @Param("merchantId") merchantId: String,
         @Param("queryString") queryString: String,
         @Param("offsetDate") offsetDate: ZonedDateTime,
         @Param("limit") limit: Int,
@@ -116,10 +107,11 @@ interface ProductRepo : JpaRepository<Product, String> {
                 "p.number_of_products_present_at_store as numberOfProductsPresentAtStore, " +
                 "p.product_price as productPrice, " +
                 "p.created_date as createdDate, " +
-                "CAST(p.merchant_id AS VARCHAR) as merchantId, "+
+                "CAST(p.merchant_id AS VARCHAR) as merchantId, " +
                 "p.data_status as status " +
                 "FROM product_table p " +
-                "WHERE p.id > :offsetId " +
+                "WHERE p.merchant_id = :merchantId " +
+                "AND p.id > :offsetId " +
                 "AND p.created_date = :offsetDate " +
                 "AND (p.id SIMILAR TO :queryString OR p.product_name SIMILAR TO :queryString) " +
                 "AND p.product_main_category SIMILAR TO :productMainCategory " +
@@ -129,7 +121,8 @@ interface ProductRepo : JpaRepository<Product, String> {
                 "LIMIT :limit",
         nativeQuery = true
     )
-    fun findDataWithOffsetId(
+    fun findDataWithOffsetIdWithMerchantId(
+        @Param("merchantId") merchantId: String,
         @Param("queryString") queryString: String,
         @Param("offsetDate") offsetDate: ZonedDateTime,
         @Param("offsetId") offsetId: String,

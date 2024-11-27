@@ -1,28 +1,26 @@
 package com.alphaStore.product.contract.aggregator
 
-import com.alphaStore.product.contract.repo.ProductRepo
+import com.alphaStore.product.contract.repo.ProductRepoForMerchant
 import com.alphaStore.product.entity.Product
-import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedImpl
 import com.alphaStore.product.enums.DataStatus
 import com.alphaStore.product.model.minifiedImpl.FetchMostRecentMinifiedImpl
+import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedImpl
 import com.alphaStore.product.reqres.AggregatorListResponse
 import com.alphaStore.product.reqres.AggregatorResponse
-
-import org.springframework.stereotype.Component
 import java.time.ZonedDateTime
 import java.util.*
 
-@Suppress("UNREACHABLE_CODE")
-@Component
-class ProductRepoAggregator(
-    private val productRepo: ProductRepo,
+class ProductRepoAggregatorForMerchant(
+    private val productRepoForMerchant: ProductRepoForMerchant
 ) {
 
+
     fun save(entity: Product): Product {
-        return productRepo.save(entity)
+        return productRepoForMerchant.save(entity)
     }
 
-    fun findCountWithOutOffsetIdAndDate(
+    fun findCountWithOutOffsetIdAndDateWithMerchantId(
+        merchantId: String,
         queryString: String,
         productMainCategory: String,
         productSubCategory: String,
@@ -30,7 +28,8 @@ class ProductRepoAggregator(
     ): AggregatorResponse<Long> {
         val databaseAccessLogId = UUID.randomUUID().toString()
         val resultFromDb =
-            productRepo.findCountWithOutOffsetIdAndDate(
+            productRepoForMerchant.findCountWithOutOffsetIdAndDateWithMerchantId(
+                merchantId = merchantId,
                 queryString = queryString,
                 productMainCategory = productMainCategory,
                 productSubCategory = productSubCategory,
@@ -40,7 +39,8 @@ class ProductRepoAggregator(
         return AggregatorResponse(data = resultFromDb, databaseAccessLogId)
     }
 
-    fun findDataWithOutOffsetIdAndDate(
+    fun findDataWithOutOffsetIdAndDateWithMerchantId(
+        merchantId: String,
         queryString: String,
         productMainCategory: String,
         productSubCategory: String,
@@ -48,7 +48,8 @@ class ProductRepoAggregator(
     ): AggregatorListResponse<ProductListMinifiedImpl> {
         val databaseAccessLogId = UUID.randomUUID().toString()
         val resultFromDb =
-            productRepo.findDataWithOutOffsetIdAndDate(
+            productRepoForMerchant.findDataWithOutOffsetIdAndDateWithMerchantId(
+                merchantId = merchantId,
                 queryString = queryString,
                 productMainCategory = productMainCategory,
                 productSubCategory = productSubCategory,
@@ -70,7 +71,8 @@ class ProductRepoAggregator(
         return AggregatorListResponse(data = resultFromDb, databaseAccessLogId)
     }
 
-    fun findDataWithOutOffsetId(
+    fun findDataWithOutOffsetIdWithMerchantId(
+        merchantId: String,
         queryString: String,
         productMainCategory: String,
         productSubCategory: String,
@@ -80,7 +82,8 @@ class ProductRepoAggregator(
     ): AggregatorListResponse<ProductListMinifiedImpl> {
         val databaseAccessLogId = UUID.randomUUID().toString()
         val resultFromDb =
-            productRepo.findDataWithOutOffsetId(
+            productRepoForMerchant.findDataWithOutOffsetIdWithMerchantId(
+                merchantId = merchantId,
                 queryString = queryString,
                 productMainCategory = productMainCategory,
                 productSubCategory = productSubCategory,
@@ -104,7 +107,8 @@ class ProductRepoAggregator(
         return AggregatorListResponse(data = resultFromDb, databaseAccessLogId)
     }
 
-    fun findDataWithOffsetId(
+    fun findDataWithOffsetIdWithMerchantId(
+        merchantId: String,
         queryString: String,
         productMainCategory: String,
         productSubCategory: String,
@@ -115,7 +119,8 @@ class ProductRepoAggregator(
     ): AggregatorListResponse<ProductListMinifiedImpl> {
         val databaseAccessLogId = UUID.randomUUID().toString()
         val resultFromDb =
-            productRepo.findDataWithOffsetId(
+            productRepoForMerchant.findDataWithOffsetIdWithMerchantId(
+                merchantId = merchantId,
                 queryString = queryString,
                 productMainCategory = productMainCategory,
                 productSubCategory = productSubCategory,
@@ -140,12 +145,14 @@ class ProductRepoAggregator(
         return AggregatorListResponse(data = resultFromDb, databaseAccessLogId)
     }
 
-    fun findTop1ByOrderByCreatedDateAsc(
-        skipCache: Boolean = false
+    fun findTop1ByOrderByCreatedDateAscWithMerchantId(
+        merchantId: String,
     ): AggregatorListResponse<FetchMostRecentMinifiedImpl> {
         val databaseAccessLogId = UUID.randomUUID().toString()
         val resultFromDb =
-            productRepo.findTop1ByOrderByCreatedDateAsc()
+            productRepoForMerchant.findTop1ByOrderByCreatedDateAscWithMerchantId(
+                merchantId = merchantId
+            )
                 .map { toMap ->
                     FetchMostRecentMinifiedImpl(
                         id = toMap.id,

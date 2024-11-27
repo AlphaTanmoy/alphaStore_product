@@ -1,5 +1,6 @@
 package com.alphaStore.product.entity
 
+import com.alphaStore.product.entity.superentity.SuperEntityWithIdCreatedLastModifiedDataStatus
 import com.fasterxml.jackson.annotation.JsonFilter
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

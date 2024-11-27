@@ -1,5 +1,6 @@
 package com.alphaStore.product.entity
 
+import com.alphaStore.product.entity.superentity.SuperEntityWithIdCreatedLastModifiedDataStatus
 import com.alphaStore.product.enums.ProductMainCategory
 import com.alphaStore.product.enums.ProductSubCategory
 import com.fasterxml.jackson.annotation.JsonFilter

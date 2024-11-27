@@ -1,5 +1,6 @@
 package com.alphaStore.product.service
 
+import com.alphaStore.product.feignClient.MerchantClient
 import com.alphaStore.product.contract.EncodingUtilContract
 import com.alphaStore.product.contract.EncryptionMasterContract
 import com.alphaStore.product.entity.Product
@@ -14,7 +15,6 @@ import com.alphaStore.product.utils.ConverterStringToObjectList
 import com.alphaStore.product.utils.DateUtil
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClientException
-import org.springframework.web.client.RestTemplate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -24,17 +24,16 @@ class ProductService(
     private val encodingUtilContract: EncodingUtilContract,
     private val encryptionMaster: EncryptionMasterContract,
     private val dateUtilContract: DateUtil,
-    private val restTemplate: RestTemplate
+    private val merchantClient: MerchantClient
 ) {
 
-    private val merchantServiceUrl = "http://localhost:8084/merchant"
 
     fun createProduct(product: Product): Product {
         try{
             val merchantId = product.merchantId
-            val response = restTemplate.getForEntity("$merchantServiceUrl/$merchantId", MerchantResponse::class.java)
+            val merchant: MerchantResponse = merchantClient.getMerchantById(merchantId)
 
-            if (!response.statusCode.is2xxSuccessful || response.body == null) {
+            if (merchant.id.isEmpty()) {
                 throw IllegalArgumentException("Merchant with ID $merchantId not found")
             }
 

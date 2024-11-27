@@ -1,6 +1,6 @@
 package com.alphaStore.product.seeders
 
-import com.alphaStore.product.contract.CountryRepoAggregator
+import com.alphaStore.product.contract.aggregator.CountryRepoAggregator
 import com.alphaStore.product.entity.Country
 import com.alphaStore.product.enums.DataStatus
 import org.springframework.stereotype.Component

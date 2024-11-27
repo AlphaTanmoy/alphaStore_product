@@ -1,6 +1,6 @@
 package com.alphaStore.product.utils
 
-import com.alphaStore.product.contract.EncodingUtilContract
+import com.alphaStore.product.contract.repo.EncodingUtilContract
 import org.springframework.stereotype.Component
 import java.util.*
 

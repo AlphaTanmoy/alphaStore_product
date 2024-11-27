@@ -1,4 +1,4 @@
-package com.alphaStore.product.contract
+package com.alphaStore.product.contract.repo
 
 import com.alphaStore.product.entity.Country
 import com.alphaStore.product.model.minified.CountryListMinifiedResponse

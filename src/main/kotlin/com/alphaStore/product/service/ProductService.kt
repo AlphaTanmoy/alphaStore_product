@@ -1,10 +1,10 @@
 package com.alphaStore.product.service
 
 import com.alphaStore.product.feignClient.MerchantClient
-import com.alphaStore.product.contract.EncodingUtilContract
-import com.alphaStore.product.contract.EncryptionMasterContract
+import com.alphaStore.product.contract.repo.EncodingUtilContract
+import com.alphaStore.product.contract.repo.EncryptionMasterContract
 import com.alphaStore.product.entity.Product
-import com.alphaStore.product.contract.ProductRepoAggregator
+import com.alphaStore.product.contract.aggregator.ProductRepoAggregator
 import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedImpl
 import com.alphaStore.product.enums.DateRangeType
 import com.alphaStore.product.error.BadRequestException

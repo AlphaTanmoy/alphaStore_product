@@ -1,6 +1,6 @@
 package com.alphaStore.product.utils
 
-import com.alphaStore.product.contract.EncryptionMasterContract
+import com.alphaStore.product.contract.repo.EncryptionMasterContract
 import com.alphaStore.product.encryptionmaster.AESUtil
 import com.alphaStore.product.error.BadRequestException
 import org.springframework.stereotype.Component

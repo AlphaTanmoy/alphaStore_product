@@ -1,5 +1,6 @@
-package com.alphaStore.product.contract
+package com.alphaStore.product.contract.aggregator
 
+import com.alphaStore.product.contract.repo.CountryRepo
 import com.alphaStore.product.entity.Country
 import com.alphaStore.product.model.minifiedImpl.CountryListMinifiedResponseImpl
 import com.alphaStore.product.enums.DataStatus

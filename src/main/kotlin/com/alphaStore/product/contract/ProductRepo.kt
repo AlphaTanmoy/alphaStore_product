@@ -3,6 +3,7 @@ package com.alphaStore.product.contract
 import com.alphaStore.product.entity.Product
 import com.alphaStore.product.model.minified.ProductListMinified
 import com.alphaStore.product.enums.DataStatus
+import com.alphaStore.product.model.minified.ProductIDAndProductNameResponse
 import jakarta.transaction.Transactional
 import org.springframework.context.annotation.Primary
 import org.springframework.data.jpa.repository.JpaRepository
@@ -36,13 +37,17 @@ interface ProductRepo : JpaRepository<Product, String> {
 
     @Query(
         value =
-        "SELECT id FROM product_table p "+
+        "SELECT " +
+        "CAST(id AS VARCHAR) as productId, "+
+        "CAST(product_name AS VARCHAR) as productName, "+
+        "CAST(merchant_id AS VARCHAR) as merchantId "+
+        "FROM product_table p "+
         "WHERE p.merchant_id = :merchantId "
         , nativeQuery = true
     )
     fun getProductIdByMerchantId(
         @Param("merchantId") merchantId: String
-    ) : ArrayList<String>
+    ) : ArrayList<ProductIDAndProductNameResponse>
 
     @Query(
         value = "SELECT COUNT(*) FROM product_table p " +

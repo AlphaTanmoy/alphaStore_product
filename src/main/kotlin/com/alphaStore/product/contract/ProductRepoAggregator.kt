@@ -3,7 +3,9 @@ package com.alphaStore.product.contract
 import com.alphaStore.product.entity.Product
 import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedImpl
 import com.alphaStore.product.enums.DataStatus
+import com.alphaStore.product.model.minified.ProductIDAndProductNameResponse
 import com.alphaStore.product.model.minifiedImpl.FetchMostRecentMinifiedImpl
+import com.alphaStore.product.model.minifiedImpl.ProductIDAndProductNameResponseImpl
 import com.alphaStore.product.reqres.AggregatorListResponse
 import com.alphaStore.product.reqres.AggregatorResponse
 
@@ -17,9 +19,16 @@ class ProductRepoAggregator(
     private val productRepo: ProductRepo,
 ) {
 
-    fun getProductIdByMerchantId(merchantId: String): ArrayList<String>{
+    fun getProductIdByMerchantId(merchantId: String): ArrayList<ProductIDAndProductNameResponseImpl>{
         val resultFromDb =
             productRepo.getProductIdByMerchantId(merchantId)
+                .map { toMap->
+                    ProductIDAndProductNameResponseImpl(
+                        productId = toMap.productId,
+                        productName = toMap.productName,
+                        merchantId = toMap.merchantId
+                    )
+            }.toCollection(ArrayList())
         return resultFromDb
     }
 

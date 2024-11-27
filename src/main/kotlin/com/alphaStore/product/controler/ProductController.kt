@@ -4,6 +4,7 @@ import com.alphaStore.product.entity.Product
 import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedImpl
 import com.alphaStore.product.service.ProductService
 import com.alphaStore.product.model.PaginationResponse
+import com.alphaStore.product.model.minifiedImpl.ProductIDAndProductNameResponseImpl
 import com.alphaStore.product.reqres.FilterOption
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.*
@@ -23,7 +24,7 @@ class ProductController (
     @GetMapping("/getByMerchantId/{merchantId}")
     fun getProductIdByMerchantId(
         @PathVariable merchantId: String
-    ): ArrayList<String> {
+    ): ArrayList<ProductIDAndProductNameResponseImpl> {
         val result = productService.getProductIdByMerchantId(merchantId)
         return result
     }

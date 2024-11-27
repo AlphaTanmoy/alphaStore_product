@@ -9,6 +9,7 @@ import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedImpl
 import com.alphaStore.product.enums.DateRangeType
 import com.alphaStore.product.error.BadRequestException
 import com.alphaStore.product.model.PaginationResponse
+import com.alphaStore.product.model.minifiedImpl.ProductIDAndProductNameResponseImpl
 import com.alphaStore.product.reqres.FilterOption
 import com.alphaStore.product.reqres.MerchantResponse
 import com.alphaStore.product.utils.ConverterStringToObjectList
@@ -44,7 +45,7 @@ class ProductService(
         }
     }
 
-    fun getProductIdByMerchantId(merchantId: String) : ArrayList<String>{
+    fun getProductIdByMerchantId(merchantId: String) : ArrayList<ProductIDAndProductNameResponseImpl>{
 
         val productIdsToReturn = productRepoAggregator.getProductIdByMerchantId(merchantId)
 

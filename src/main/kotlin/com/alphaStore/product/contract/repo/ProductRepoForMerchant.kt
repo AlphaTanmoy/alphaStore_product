@@ -14,7 +14,7 @@ import java.time.ZonedDateTime
 interface ProductRepoForMerchant : JpaRepository<Product, String> {
 
     @Query(
-        value = "SELECT p FROM product_table p WHERE p.merchant_id = :merchantId ORDER BY p.createdDate ASC"
+        value = "SELECT * FROM product_table p WHERE p.merchant_id = :merchantId ORDER BY p.created_date ASC"
         , nativeQuery = true
     )
     fun findTop1ByOrderByCreatedDateAscWithMerchantId(@Param("merchantId") merchantId: String): List<Product>

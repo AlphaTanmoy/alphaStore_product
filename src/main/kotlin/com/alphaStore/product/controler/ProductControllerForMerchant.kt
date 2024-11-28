@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.*
 import java.net.URLDecoder
 
 @RestController
-@RequestMapping("/productForMerchant")
+@RequestMapping("/product")
 class ProductControllerForMerchant (
     private val productServiceForMerchant: ProductServiceForMerchant
 ){
 
-    @GetMapping("/{merchantId}")
+    @GetMapping("/view/{merchantId}")
     fun getAllProductsByMerchantId(
         @PathVariable merchantId: String,
         @RequestParam("queryString") queryString: String? = null,

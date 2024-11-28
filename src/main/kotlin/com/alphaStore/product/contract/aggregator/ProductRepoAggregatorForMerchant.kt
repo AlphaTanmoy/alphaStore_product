@@ -7,9 +7,12 @@ import com.alphaStore.product.model.minifiedImpl.FetchMostRecentMinifiedImpl
 import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedImpl
 import com.alphaStore.product.reqres.AggregatorListResponse
 import com.alphaStore.product.reqres.AggregatorResponse
+import org.springframework.stereotype.Component
 import java.time.ZonedDateTime
 import java.util.*
 
+@Suppress("UNREACHABLE_CODE")
+@Component
 class ProductRepoAggregatorForMerchant(
     private val productRepoForMerchant: ProductRepoForMerchant
 ) {

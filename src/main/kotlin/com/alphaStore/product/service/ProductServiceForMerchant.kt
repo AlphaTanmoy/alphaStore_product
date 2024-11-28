@@ -5,7 +5,6 @@ import com.alphaStore.product.contract.repo.EncodingUtilContract
 import com.alphaStore.product.contract.repo.EncryptionMasterContract
 import com.alphaStore.product.enums.DateRangeType
 import com.alphaStore.product.error.BadRequestException
-import com.alphaStore.product.feignClient.MerchantClient
 import com.alphaStore.product.model.PaginationResponse
 import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedImpl
 import com.alphaStore.product.reqres.FilterOption
@@ -20,8 +19,7 @@ class ProductServiceForMerchant(
     private val productRepoAggregatorForMerchant: ProductRepoAggregatorForMerchant,
     private val encodingUtilContract: EncodingUtilContract,
     private val encryptionMaster: EncryptionMasterContract,
-    private val dateUtilContract: DateUtil,
-    private val merchantClient: MerchantClient
+    private val dateUtilContract: DateUtil
 ) {
 
 

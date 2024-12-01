@@ -12,6 +12,5 @@ data class ProductListMinifiedImpl(
     override var productMainCategory: String? = null,
     override var productSubCategory: String? = null,
     override var createdDate: Instant,
-    override var status: DataStatus,
-    override var merchantId: String
+    override var status: DataStatus
 ): ProductListMinified

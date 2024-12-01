@@ -6,7 +6,7 @@ import com.alphaStore.product.contract.repo.EncryptionMasterContract
 import com.alphaStore.product.enums.DateRangeType
 import com.alphaStore.product.error.BadRequestException
 import com.alphaStore.product.model.PaginationResponse
-import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedImpl
+import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedForMerchantImpl
 import com.alphaStore.product.reqres.FilterOption
 import com.alphaStore.product.utils.ConverterStringToObjectList
 import com.alphaStore.product.utils.DateUtil
@@ -36,7 +36,7 @@ class ProductServiceForMerchant(
         giveCount: Boolean,
         limit: Int,
         giveData: Boolean
-    ): PaginationResponse<ProductListMinifiedImpl> {
+    ): PaginationResponse<ProductListMinifiedForMerchantImpl> {
         var offsetDateFinal: ZonedDateTime? = null
         var offsetId = ""
 
@@ -76,7 +76,7 @@ class ProductServiceForMerchant(
             )
         }
 
-        val toReturnAllProducts: ArrayList<ProductListMinifiedImpl> = ArrayList()
+        val toReturnAllProducts: ArrayList<ProductListMinifiedForMerchantImpl> = ArrayList()
         var giveCountData = 0L
 
         if (giveCount) {
@@ -100,7 +100,7 @@ class ProductServiceForMerchant(
                     queryString = queryString,
                     productMainCategory = productMainCategory,
                     productSubCategory = productSubCategory,
-                    isActive = isActive,
+                    isActive = isActive
                 )
                 toReturnAllProducts.addAll(allProducts.data)
             } else {

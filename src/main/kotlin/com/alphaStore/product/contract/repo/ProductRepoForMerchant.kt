@@ -2,7 +2,7 @@ package com.alphaStore.product.contract.repo
 
 import com.alphaStore.product.entity.Product
 import com.alphaStore.product.enums.DataStatus
-import com.alphaStore.product.model.minified.ProductListMinified
+import com.alphaStore.product.model.minified.ProductListMinifiedForMerchant
 import org.springframework.context.annotation.Primary
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -63,7 +63,7 @@ interface ProductRepoForMerchant : JpaRepository<Product, String> {
         @Param("productSubCategory") productSubCategory: String,
         @Param("isActiveRequired") isActiveRequired: Boolean = false,
         @Param("dataStatus") dataStatus: DataStatus = DataStatus.ACTIVE
-    ): List<ProductListMinified>
+    ): List<ProductListMinifiedForMerchant>
 
     @Query(
         value = "SELECT " +
@@ -96,7 +96,7 @@ interface ProductRepoForMerchant : JpaRepository<Product, String> {
         @Param("productSubCategory") productSubCategory: String,
         @Param("isActiveRequired") isActiveRequired: Boolean = false,
         @Param("dataStatus") dataStatus: DataStatus = DataStatus.ACTIVE
-    ): List<ProductListMinified>
+    ): List<ProductListMinifiedForMerchant>
 
     @Query(
         value = "SELECT " +
@@ -131,5 +131,5 @@ interface ProductRepoForMerchant : JpaRepository<Product, String> {
         @Param("productSubCategory") productSubCategory: String,
         @Param("isActiveRequired") isActiveRequired: Boolean = false,
         @Param("dataStatus") dataStatus: DataStatus = DataStatus.ACTIVE
-    ): List<ProductListMinified>
+    ): List<ProductListMinifiedForMerchant>
 }

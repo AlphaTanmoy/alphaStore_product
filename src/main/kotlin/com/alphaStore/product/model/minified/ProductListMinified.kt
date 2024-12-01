@@ -11,6 +11,5 @@ interface ProductListMinified {
     var productMainCategory: String?
     var productSubCategory: String?
     var createdDate: Instant
-    var merchantId: String
     var status: DataStatus
 }

@@ -4,7 +4,7 @@ import com.alphaStore.product.contract.repo.ProductRepoForMerchant
 import com.alphaStore.product.entity.Product
 import com.alphaStore.product.enums.DataStatus
 import com.alphaStore.product.model.minifiedImpl.FetchMostRecentMinifiedImpl
-import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedImpl
+import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedForMerchantImpl
 import com.alphaStore.product.reqres.AggregatorListResponse
 import com.alphaStore.product.reqres.AggregatorResponse
 import org.springframework.stereotype.Component
@@ -48,7 +48,7 @@ class ProductRepoAggregatorForMerchant(
         productMainCategory: String,
         productSubCategory: String,
         isActive: Boolean?
-    ): AggregatorListResponse<ProductListMinifiedImpl> {
+    ): AggregatorListResponse<ProductListMinifiedForMerchantImpl> {
         val databaseAccessLogId = UUID.randomUUID().toString()
         val resultFromDb =
             productRepoForMerchant.findDataWithOutOffsetIdAndDateWithMerchantId(
@@ -59,7 +59,7 @@ class ProductRepoAggregatorForMerchant(
                 isActiveRequired = isActive!= null,
                 dataStatus = if (isActive == true || isActive == null) DataStatus.ACTIVE else DataStatus.INACTIVE
             ).map{ toMap->
-                ProductListMinifiedImpl(
+                ProductListMinifiedForMerchantImpl(
                     id = toMap.id,
                     productName = toMap.productName,
                     productPrice = toMap.productPrice,
@@ -82,7 +82,7 @@ class ProductRepoAggregatorForMerchant(
         isActive: Boolean?,
         limit: Int,
         offsetDate: ZonedDateTime
-    ): AggregatorListResponse<ProductListMinifiedImpl> {
+    ): AggregatorListResponse<ProductListMinifiedForMerchantImpl> {
         val databaseAccessLogId = UUID.randomUUID().toString()
         val resultFromDb =
             productRepoForMerchant.findDataWithOutOffsetIdWithMerchantId(
@@ -95,7 +95,7 @@ class ProductRepoAggregatorForMerchant(
                 limit = limit,
                 offsetDate = offsetDate
             ).map{ toMap->
-                ProductListMinifiedImpl(
+                ProductListMinifiedForMerchantImpl(
                     id = toMap.id,
                     productName = toMap.productName,
                     productPrice = toMap.productPrice,
@@ -119,7 +119,7 @@ class ProductRepoAggregatorForMerchant(
         limit: Int,
         offsetDate: ZonedDateTime,
         offsetId: String
-    ): AggregatorListResponse<ProductListMinifiedImpl> {
+    ): AggregatorListResponse<ProductListMinifiedForMerchantImpl> {
         val databaseAccessLogId = UUID.randomUUID().toString()
         val resultFromDb =
             productRepoForMerchant.findDataWithOffsetIdWithMerchantId(
@@ -133,7 +133,7 @@ class ProductRepoAggregatorForMerchant(
                 limit = limit,
                 offsetId = offsetId
             ).map{ toMap->
-                ProductListMinifiedImpl(
+                ProductListMinifiedForMerchantImpl(
                     id = toMap.id,
                     productName = toMap.productName,
                     productPrice = toMap.productPrice,

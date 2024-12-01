@@ -1,4 +1,4 @@
-package com.alphaStore.product.controler
+package com.alphaStore.product.controller
 
 import com.alphaStore.product.model.PaginationResponse
 import com.alphaStore.product.model.minifiedImpl.CountryListMinifiedResponseImpl

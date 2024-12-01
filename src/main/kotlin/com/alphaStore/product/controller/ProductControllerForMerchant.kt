@@ -1,7 +1,7 @@
 package com.alphaStore.product.controller
 
 import com.alphaStore.product.model.PaginationResponse
-import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedImpl
+import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedForMerchantImpl
 import com.alphaStore.product.reqres.FilterOption
 import com.alphaStore.product.service.ProductServiceForMerchant
 import org.springframework.web.bind.annotation.*
@@ -25,7 +25,7 @@ class ProductControllerForMerchant (
         @RequestParam("considerMaxDateRange", defaultValue = "false") considerMaxDateRange: Boolean = false,
         @RequestParam("limit") limit: Int? = null,
         @RequestParam("giveData", defaultValue = "true") giveData: Boolean = true,
-    ): PaginationResponse<ProductListMinifiedImpl> {
+    ): PaginationResponse<ProductListMinifiedForMerchantImpl> {
         val toRetFilterOption: ArrayList<FilterOption> = ArrayList()
 
         var queryStringFinal = "%"

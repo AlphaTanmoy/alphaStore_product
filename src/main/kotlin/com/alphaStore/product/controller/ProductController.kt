@@ -1,6 +1,7 @@
 package com.alphaStore.product.controller
 
 import com.alphaStore.product.entity.Product
+import com.alphaStore.product.model.CopyProduct
 import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedImpl
 import com.alphaStore.product.service.ProductService
 import com.alphaStore.product.model.PaginationResponse
@@ -15,11 +16,30 @@ class ProductController (
     private val productService: ProductService
 ) {
 
-    @PostMapping("/create")
+    /*@PostMapping("/create")
     fun createProduct(@RequestBody newProduct: Product): Product {
         return productService.createProduct(newProduct)
-    }
+    }*/
 
+    @PostMapping("/save")
+    fun saveProduct(@RequestBody copyProduct: CopyProduct): Product {
+        val productMapping = Product(
+            productName = copyProduct.productName,
+            productPrice = copyProduct.productPrice,
+            numberOfProductsPresentAtStore = copyProduct.numberOfProductsPresentAtStore,
+            numberOfProductsEnteredByMerchant = copyProduct.numberOfProductsEnteredByMerchant,
+            productMainCategory = copyProduct.productMainCategory,
+            productSubCategory = copyProduct.productSubCategory,
+            merchantId = copyProduct.merchantId,
+            uniqueId = copyProduct.uniqueId,
+            batchId = copyProduct.batchId
+        )
+
+        productMapping.id = copyProduct.id
+
+        return productService.createProduct(productMapping)
+    }
+    
 
     @GetMapping("/getAll")
     fun getAllProducts(

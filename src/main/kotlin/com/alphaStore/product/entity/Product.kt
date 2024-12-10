@@ -13,22 +13,22 @@ import jakarta.validation.constraints.*
 data class Product(
     @field:NotBlank(message = "Product name must not be blank")
     @Column(nullable = false)
-    val productName: String = "",
+    var productName: String = "",
 
     @field:NotNull(message = "Product price must not be null")
     @field:Min(value = 1, message = "Product price must be greater than or equal to 1")
     @Column(nullable = false)
-    val productPrice: Long = 0,
+    var productPrice: Long = 0,
 
     @field:NotNull(message = "Product main category must not be null")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    val productMainCategory: ProductMainCategory,
+    var productMainCategory: ProductMainCategory,
 
     @field:NotNull(message = "Product sub-category must not be null")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    val productSubCategory: ProductSubCategory,
+    var productSubCategory: ProductSubCategory,
 
     @Column(nullable = false)
     var merchantId: String = "",
@@ -40,10 +40,13 @@ data class Product(
     var uniqueProductId: String = "",
 
     @Column(nullable = false)
-    val productInStore: Long = 0,
+    var productInStore: Long = 0,
 
     @Column(nullable = false)
-    val productSellingStatus: ProductSellingStatus = ProductSellingStatus.IN_STORE
+    var companyName: String = "",
+
+    @Column(nullable = false)
+    var productSellingStatus: ProductSellingStatus = ProductSellingStatus.IN_STORE
 ) : SuperEntityWithIdCreatedLastModifiedDataStatus()
 
 

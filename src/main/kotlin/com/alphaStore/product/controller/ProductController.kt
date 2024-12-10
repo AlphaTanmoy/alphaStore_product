@@ -1,6 +1,7 @@
 package com.alphaStore.product.controller
 
 import com.alphaStore.product.entity.Product
+import com.alphaStore.product.enums.ProductSellingStatus
 import com.alphaStore.product.model.CopyProduct
 import com.alphaStore.product.model.minifiedImpl.ProductListMinifiedImpl
 import com.alphaStore.product.service.ProductService
@@ -26,16 +27,16 @@ class ProductController (
         val productMapping = Product(
             productName = copyProduct.productName,
             productPrice = copyProduct.productPrice,
-            numberOfProductsPresentAtStore = copyProduct.numberOfProductsPresentAtStore,
-            numberOfProductsEnteredByMerchant = copyProduct.numberOfProductsEnteredByMerchant,
             productMainCategory = copyProduct.productMainCategory,
             productSubCategory = copyProduct.productSubCategory,
             merchantId = copyProduct.merchantId,
-            uniqueId = copyProduct.uniqueId,
-            batchId = copyProduct.batchId
+            batchId = copyProduct.batchId,
+            uniqueProductId = copyProduct.uniqueProductId,
+            companyName = copyProduct.companyName
         )
 
         productMapping.id = copyProduct.id
+        productMapping.productSellingStatus = ProductSellingStatus.IN_STORE
 
         return productService.createProduct(productMapping)
     }

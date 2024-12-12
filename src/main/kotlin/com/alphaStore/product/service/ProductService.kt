@@ -1,6 +1,5 @@
 package com.alphaStore.product.service
 
-import com.alphaStore.product.feignClient.MerchantClient
 import com.alphaStore.product.contract.repo.EncodingUtilContract
 import com.alphaStore.product.contract.repo.EncryptionMasterContract
 import com.alphaStore.product.entity.Product
@@ -10,7 +9,6 @@ import com.alphaStore.product.enums.DateRangeType
 import com.alphaStore.product.error.BadRequestException
 import com.alphaStore.product.model.PaginationResponse
 import com.alphaStore.product.reqres.FilterOption
-import com.alphaStore.product.reqres.MerchantResponse
 import com.alphaStore.product.utils.ConverterStringToObjectList
 import com.alphaStore.product.utils.DateUtil
 import org.springframework.stereotype.Component
@@ -23,20 +21,12 @@ class ProductService(
     private val productRepoAggregator: ProductRepoAggregator,
     private val encodingUtilContract: EncodingUtilContract,
     private val encryptionMaster: EncryptionMasterContract,
-    private val dateUtilContract: DateUtil,
-    private val merchantClient: MerchantClient
+    private val dateUtilContract: DateUtil
 ) {
 
 
     fun createProduct(product: Product): Product {
         try{
-            val merchantId = product.merchantId
-            val merchant: MerchantResponse = merchantClient.getMerchantById(merchantId)
-
-            if (merchant.id.isEmpty()) {
-                throw IllegalArgumentException("Merchant with ID $merchantId not found")
-            }
-
             val productToReturn = productRepoAggregator.save(product)
             return productToReturn
         }catch (ex: RestClientException) {

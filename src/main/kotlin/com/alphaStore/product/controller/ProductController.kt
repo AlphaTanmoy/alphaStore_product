@@ -17,10 +17,10 @@ class ProductController (
     private val productService: ProductService
 ) {
 
-    /*@PostMapping("/create")
+    @PostMapping("/create")
     fun createProduct(@RequestBody newProduct: Product): Product {
         return productService.createProduct(newProduct)
-    }*/
+    }
 
     @PostMapping("/save")
     fun saveProduct(@RequestBody copyProduct: CopyProduct): Product {

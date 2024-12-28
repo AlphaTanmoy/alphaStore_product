@@ -1,7 +1,6 @@
 package com.alphaStore.product.controller
 
 import com.alphaStore.product.model.PaginationResponse
-import com.alphaStore.product.model.minifiedImpl.CountryListMinifiedResponseImpl
 import com.alphaStore.product.reqres.FilterOption
 import com.alphaStore.product.service.CountryService
 import org.springframework.web.bind.annotation.GetMapping

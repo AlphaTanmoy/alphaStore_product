@@ -1,11 +1,11 @@
 package com.alphaStore.product.service
 
 import com.alphaStore.product.RestTemplateMaster
-import com.alphaStore.product.entity.Country
 import com.alphaStore.product.error.BadRequestException
 import com.alphaStore.product.model.PaginationResponse
 import com.alphaStore.product.reqres.FilterOption
 import org.springframework.http.HttpMethod
+import com.alphaStore.product.model.Country
 import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException

@@ -23,6 +23,7 @@ class ProductRepoAggregator(
     }
 
     fun findCountWithOutOffsetIdAndDate(
+        merchantId: String,
         queryString: String,
         productMainCategory: String,
         productSubCategory: String,
@@ -35,12 +36,14 @@ class ProductRepoAggregator(
                 productMainCategory = productMainCategory,
                 productSubCategory = productSubCategory,
                 isActiveRequired = isActive!= null,
-                dataStatus = if (isActive == true || isActive == null) DataStatus.ACTIVE else DataStatus.INACTIVE
+                dataStatus = if (isActive == true || isActive == null) DataStatus.ACTIVE else DataStatus.INACTIVE,
+                merchantId = merchantId
             )
         return AggregatorResponse(data = resultFromDb, databaseAccessLogId)
     }
 
     fun findDataWithOutOffsetIdAndDate(
+        merchantId: String,
         queryString: String,
         productMainCategory: String,
         productSubCategory: String,
@@ -53,13 +56,14 @@ class ProductRepoAggregator(
                 productMainCategory = productMainCategory,
                 productSubCategory = productSubCategory,
                 isActiveRequired = isActive!= null,
-                dataStatus = if (isActive == true || isActive == null) DataStatus.ACTIVE else DataStatus.INACTIVE
+                dataStatus = if (isActive == true || isActive == null) DataStatus.ACTIVE else DataStatus.INACTIVE,
+                merchantId = merchantId
             ).map{ toMap->
                 ProductListMinifiedImpl(
                     id = toMap.id,
                     productName = toMap.productName,
                     productPrice = toMap.productPrice,
-                    numberOfProductsPresentAtStore = toMap.numberOfProductsPresentAtStore,
+                    productsInStore = toMap.productsInStore,
                     productMainCategory = toMap.productMainCategory,
                     productSubCategory = toMap.productSubCategory,
                     createdDate = toMap.createdDate,
@@ -70,6 +74,7 @@ class ProductRepoAggregator(
     }
 
     fun findDataWithOutOffsetId(
+        merchantId: String,
         queryString: String,
         productMainCategory: String,
         productSubCategory: String,
@@ -86,13 +91,14 @@ class ProductRepoAggregator(
                 isActiveRequired = isActive != null,
                 dataStatus = if (isActive == true || isActive == null) DataStatus.ACTIVE else DataStatus.INACTIVE,
                 limit = limit,
-                offsetDate = offsetDate
+                offsetDate = offsetDate,
+                merchantId = merchantId
             ).map{ toMap->
                 ProductListMinifiedImpl(
                     id = toMap.id,
                     productName = toMap.productName,
                     productPrice = toMap.productPrice,
-                    numberOfProductsPresentAtStore = toMap.numberOfProductsPresentAtStore,
+                    productsInStore = toMap.productsInStore,
                     productMainCategory = toMap.productMainCategory,
                     productSubCategory = toMap.productSubCategory,
                     createdDate = toMap.createdDate,
@@ -103,6 +109,7 @@ class ProductRepoAggregator(
     }
 
     fun findDataWithOffsetId(
+        merchantId: String,
         queryString: String,
         productMainCategory: String,
         productSubCategory: String,
@@ -121,13 +128,14 @@ class ProductRepoAggregator(
                 dataStatus = if (isActive == true || isActive == null) DataStatus.ACTIVE else DataStatus.INACTIVE,
                 offsetDate = offsetDate,
                 limit = limit,
-                offsetId = offsetId
+                offsetId = offsetId,
+                merchantId = merchantId
             ).map{ toMap->
                 ProductListMinifiedImpl(
                     id = toMap.id,
                     productName = toMap.productName,
                     productPrice = toMap.productPrice,
-                    numberOfProductsPresentAtStore = toMap.numberOfProductsPresentAtStore,
+                    productsInStore = toMap.productsInStore,
                     productMainCategory = toMap.productMainCategory,
                     productSubCategory = toMap.productSubCategory,
                     createdDate = toMap.createdDate,

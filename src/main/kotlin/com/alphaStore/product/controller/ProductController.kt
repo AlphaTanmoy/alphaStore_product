@@ -43,6 +43,7 @@ class ProductController (
 
     @GetMapping("/getAll")
     fun getAllProducts(
+        @RequestParam("merchantId") merchantID: String? = null,
         @RequestParam("queryString") queryString: String? = null,
         @RequestParam("isActive") isActive: Boolean? = null,
         @RequestParam("offsetToken") offsetToken: String? = null,
@@ -54,6 +55,12 @@ class ProductController (
         @RequestParam("giveData", defaultValue = "true") giveData: Boolean = true,
     ): PaginationResponse<ProductListMinifiedImpl> {
         val toRetFilterOption: ArrayList<FilterOption> = ArrayList()
+
+        var merchantIdPresent = "%"
+        merchantID?.let { obj->
+            toRetFilterOption.add(FilterOption("merchantId", obj, obj))
+            merchantIdPresent = obj.split(',').joinToString("|") { URLDecoder.decode(it, "UTF-8") }
+        }
 
         var queryStringFinal = "%"
         queryString?.let { obj ->
@@ -95,6 +102,7 @@ class ProductController (
         }
 
         val resultFromDb = productService.getProducts(
+            merchantID = merchantIdPresent,
             queryString = queryStringFinal,
             considerMaxDateRange = considerMaxDateRange,
             toRetFilterOption = toRetFilterOption,

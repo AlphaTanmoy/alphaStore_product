@@ -35,6 +35,7 @@ class ProductService(
     }
 
     fun getProducts(
+        merchantID: String,
         queryString: String,
         productSubCategory: String,
         productMainCategory: String,
@@ -94,6 +95,7 @@ class ProductService(
                     productMainCategory = productMainCategory,
                     productSubCategory = productSubCategory,
                     isActive = isActive,
+                    merchantId = merchantID
                 )
             giveCountData = allUserCount.data
 
@@ -107,6 +109,7 @@ class ProductService(
                     productMainCategory = productMainCategory,
                     productSubCategory = productSubCategory,
                     isActive = isActive,
+                    merchantId = merchantID
                 )
                 toReturnAllProducts.addAll(allProducts.data)
             } else {
@@ -119,7 +122,8 @@ class ProductService(
                                 productSubCategory = productSubCategory,
                                 isActive = isActive,
                                 limit = limit,
-                                offsetDate = offsetDateFinal!!
+                                offsetDate = offsetDateFinal!!,
+                                merchantId = merchantID
                             )
                         }
                     if (productFirstPage.data.isEmpty()) {
@@ -139,7 +143,8 @@ class ProductService(
                             isActive = isActive,
                             limit = limit,
                             offsetDate = offsetDateFinal!!,
-                            offsetId = offsetId
+                            offsetId = offsetId,
+                            merchantId = merchantID
                         )
                     val nextPageSize = limit - productNextPageWithSameData.data.size
                     val productNextPage = productRepoAggregator.findDataWithOutOffsetId(
@@ -148,7 +153,8 @@ class ProductService(
                         productSubCategory = productSubCategory,
                         isActive = isActive,
                         limit = nextPageSize,
-                        offsetDate = offsetDateFinal!!
+                        offsetDate = offsetDateFinal!!,
+                        merchantId = merchantID
                     )
                     toReturnAllProducts.addAll(productNextPageWithSameData.data)
                     toReturnAllProducts.addAll(productNextPage.data)

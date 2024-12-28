@@ -28,7 +28,7 @@ class CountryController (
         @RequestParam("limit") limit: Int? = null,
         @RequestParam("dateRangeType") dateRangeType: String? = null,
         @RequestParam("giveData", defaultValue = "true") giveData: Boolean = true,
-    ): PaginationResponse<CountryListMinifiedResponseImpl> {
+    ): Any {
         val toRetFilterOption: ArrayList<FilterOption> = ArrayList()
 
         var queryStringFinal = "%"

@@ -1,26 +1,19 @@
 package com.alphaStore.product.service
 
-import com.alphaStore.product.contract.aggregator.CountryRepoAggregator
+import com.alphaStore.product.RestTemplateMaster
 import com.alphaStore.product.entity.Country
-import com.alphaStore.product.model.minifiedImpl.CountryListMinifiedResponseImpl
-import com.alphaStore.product.utils.ConverterStringToObjectList
-import com.alphaStore.product.utils.DateUtil
-import com.alphaStore.product.utils.EncryptionMaster
-import com.alphaStore.product.contract.repo.EncodingUtilContract
-import com.alphaStore.product.enums.DateRangeType
 import com.alphaStore.product.error.BadRequestException
 import com.alphaStore.product.model.PaginationResponse
 import com.alphaStore.product.reqres.FilterOption
+import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Component
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.HttpServerErrorException
+import org.springframework.web.util.UriComponentsBuilder
 
 @Component
 class CountryService(
-    private val countryRepoAggregator: CountryRepoAggregator,
-    private val encodingUtilContract: EncodingUtilContract,
-    private val encryptionMaster: EncryptionMaster,
-    private val dateUtilContract: DateUtil,
+    private val restTemplateMaster: RestTemplateMaster
 ) {
 
 
@@ -34,166 +27,121 @@ class CountryService(
         considerMaxDateRange: Boolean,
         dateRangeType: String?,
         pageSizeFinal: Int,
-    ): PaginationResponse<CountryListMinifiedResponseImpl> {
-        var offsetDateFinal: ZonedDateTime? = null
-        var offsetId = ""
-        offsetToken?.let {
-            val decrypted = encryptionMaster.decrypt(
-                encodingUtilContract.decode(
-                    it
-                )
-            )
-            val splits = decrypted.split("::")
-            val decryptedOffsetDate = dateUtilContract.getZonedDateTimeFromStringUsingIsoFormatServerTimeZone(splits[0])
-            if (decryptedOffsetDate.isEmpty)
-                throw BadRequestException("Please provide valid offset token")
-            offsetDateFinal = decryptedOffsetDate.get()
-            offsetId = splits[1]
-        } ?: run {
-            val firstCreated =
-                countryRepoAggregator.findTop1ByOrderByCreatedDateAsc()
-            offsetDateFinal = if (firstCreated.data.isEmpty())
-                null
-            else {
-                val instant = firstCreated.data[0]
-                instant.let {
-                    ZonedDateTime.ofInstant(it.createdDate.minusNanos(1000), ZoneId.of("UTC"))
-                }
-            }
-        }
-        offsetDateFinal ?: run {
-            return PaginationResponse(
-                arrayListOf(),
-                filterUsed = toRetFilterOption,
-            )
-        }
-        val countriesToReturn: ArrayList<CountryListMinifiedResponseImpl> = ArrayList()
-        var dataCount = 0L
-        if (giveCount) {
-            val countFromDb =
-                countryRepoAggregator.findCountWithOutOffsetIdOffsetDateAndLimit(
-                    queryString = queryStringFinal,
-                    serviceable = serviceable
-                )
-            dataCount = countFromDb.data
-        }
-        if (giveData) {
-            if (considerMaxDateRange && dateRangeType != null && dateRangeType == DateRangeType.MAX.name) {
-                val allData = countryRepoAggregator.findAllDataWithOutOffsetIdOffsetDateAndLimit(
-                    queryString = queryStringFinal,
-                    serviceable = serviceable
-                )
-                countriesToReturn.addAll(allData.data)
-            } else {
-                if (offsetId == "") {
-                    val countriesResultForFirstPage = countryRepoAggregator.findWithOutOffsetId(
-                        queryString = queryStringFinal,
-                        zonedDateTime = offsetDateFinal!!,
-                        serviceable = serviceable,
-                        limit = pageSizeFinal
-                    )
-                    if (countriesResultForFirstPage.data.isEmpty()) {
-                        return PaginationResponse(
-                            arrayListOf(),
-                            filterUsed = toRetFilterOption,
-                        )
+    ): Any {
+        try{
+            val urlWithParams =
+                UriComponentsBuilder.fromHttpUrl("http://localhost:8086/country/getAll")
+                    .apply {
+                        offsetToken?.let { queryParam("offsetToken", it) }
+                        queryParam("queryString", queryStringFinal)
+                        dateRangeType?.let { queryParam("dateRangeType", it) }
+                        queryParam("considerMaxDateRange",considerMaxDateRange)
+                        serviceable?.let { queryParam("serviceable", it) }
+                        queryParam("giveCount",giveCount)
+                        queryParam("giveData",giveData)
+                        queryParam("limit", pageSizeFinal)
                     }
-                    countriesToReturn.addAll(countriesResultForFirstPage.data)
-                } else {
-                    val countriesResultForNextPageWithSameDate = countryRepoAggregator.findWithOffsetId(
-                        queryString = queryStringFinal,
-                        zonedDateTime = offsetDateFinal!!,
-                        offsetId = offsetId,
-                        serviceable = serviceable,
-                        limit = pageSizeFinal,
-                    )
-                    val nextPageSize = pageSizeFinal - countriesResultForNextPageWithSameDate.data.size
-                    val countriesResultForNextPage = countryRepoAggregator.findWithOutOffsetId(
-                        queryString = queryStringFinal,
-                        zonedDateTime = offsetDateFinal!!,
-                        serviceable = serviceable,
-                        limit = nextPageSize,
-                    )
-                    countriesToReturn.addAll(countriesResultForNextPageWithSameDate.data)
-                    countriesToReturn.addAll(countriesResultForNextPage.data)
-
-                }
-            }
-            if (countriesToReturn.isEmpty()) {
-                return PaginationResponse(
-                    arrayListOf(),
-                    filterUsed = toRetFilterOption,
-                )
-            }else{
-                return PaginationResponse(
-                    ConverterStringToObjectList.sanitizeForOutput(ArrayList(countriesToReturn)),
-                    encodingUtilContract.encode(
-                        encryptionMaster.encrypt(
-                            "${
-                                countriesToReturn.last().createdDate
-                            }::${countriesToReturn.last().id}",
-                        )
-                    ),
-                    filterUsed = toRetFilterOption,
-                    recordCount = dataCount.toInt()
-                )
-            }
-        } else {
-            return PaginationResponse(
-                filterUsed = toRetFilterOption,
-                recordCount = dataCount.toInt()
+                    .toUriString()
+            val response = restTemplateMaster.getRestTemplate().exchange(
+                urlWithParams,
+                HttpMethod.GET,
+                null,
+                PaginationResponse::class.java,
             )
+            val paginationResponse = response.body
+            val products = paginationResponse?.data ?: arrayListOf()
+            val offsetTokenData = paginationResponse?.offsetToken
+            val recordCount = paginationResponse?.recordCount ?: 0
+
+            return PaginationResponse<Any>(
+                data = ArrayList(products),
+                offsetToken = offsetTokenData,
+                recordCount = recordCount,
+                filterUsed = toRetFilterOption
+            )
+        }catch (ex: HttpClientErrorException) {
+            //logger.debug("HTTP Error : {} - {}", ex.statusCode, ex.responseBodyAsString)
+            throw BadRequestException("Unable to process your request currently, Please try after some time later!")
+        } catch (ex: HttpServerErrorException) {
+            //logger.debug("Server Error : {} - {}", ex.statusCode, ex.responseBodyAsString)
+            throw BadRequestException("Unable to process your request due to server error, Please try after some time later!")
+        } catch (ex: Exception) {
+            //logger.debug("Unexpected error occurred while fetching products : ${ex.message}")
+            throw BadRequestException("Unexpected error occurred while fetching data products")
+        }
+    }
+
+    fun getCountryByKnownName(
+        knownName: String
+    ): Country? {
+        try{
+            val urlWithParams =
+                UriComponentsBuilder.fromHttpUrl(
+                    "http://localhost:8086/country/knownName/$knownName"
+                )
+                    .toUriString()
+            val response = restTemplateMaster.getRestTemplate().exchange(
+                urlWithParams,
+                HttpMethod.GET,
+                null,
+                Country::class.java,
+            )
+            val responseBody = response.body
+            return responseBody
+
+        } catch (ex: HttpClientErrorException) {
+            //logger.debug("HTTP Error : {} - {}", ex.statusCode, ex.responseBodyAsString)
+            throw BadRequestException("Unable to process your request currently, Please try after some time later!")
+        } catch (ex: HttpServerErrorException) {
+            //logger.debug("Server Error : {} - {}", ex.statusCode, ex.responseBodyAsString)
+            throw BadRequestException("Unable to process your request due to server error, Please try after some time later!")
+        } catch (ex: Exception) {
+            //logger.debug("Unexpected error occurred while fetching products : ${ex.message}")
+            throw BadRequestException("Unexpected error occurred while fetching data products")
         }
     }
 
     fun getCountryById(
         countryId: String,
+    ): Country? {
+        try{
+            val urlWithParams =
+                UriComponentsBuilder.fromHttpUrl(
+                    "http://localhost:8085/country/id/$countryId"
+                )
+                    .toUriString()
+            val response = restTemplateMaster.getRestTemplate().exchange(
+                urlWithParams,
+                HttpMethod.GET,
+                null,
+                Country::class.java,
+            )
+            val responseBody = response.body
+            return responseBody
+
+        } catch (ex: HttpClientErrorException) {
+            //logger.debug("HTTP Error : {} - {}", ex.statusCode, ex.responseBodyAsString)
+            throw BadRequestException("Unable to process your request currently, Please try after some time later!")
+        } catch (ex: HttpServerErrorException) {
+            //logger.debug("Server Error : {} - {}", ex.statusCode, ex.responseBodyAsString)
+            throw BadRequestException("Unable to process your request due to server error, Please try after some time later!")
+        } catch (ex: Exception) {
+            //logger.debug("Unexpected error occurred while fetching products : ${ex.message}")
+            throw BadRequestException("Unexpected error occurred while fetching data products")
+        }
+    }
+
+    /*    fun getCountryByIsdCode(
+            countryIsdCode: String,
+            apisAccessLogId: String
         ): Country {
-        val countries = countryRepoAggregator.findByIdAndDataStatus(
-            countryId,
-        )
-        if (countries.data.isEmpty()) {
-            throw BadRequestException("Country is not found")
-        }
-        val country = countries.data[0]
-        return country
-    }
 
-    fun getCountryByIsdCode(
-        countryIsdCode: String,
-        apisAccessLogId: String
-    ): Country {
-        val countries = countryRepoAggregator.findByIsdCodeAndDataStatus(
-            countryIsdCode,
-        )
-        if (countries.data.isEmpty()) {
-            throw BadRequestException("Country is not found")
         }
-        val country = countries.data[0]
-        return  country
-    }
 
-    fun updateCountry(
-        country: Country,
-        valueBeforeChange: Any,
-        valueAfterChange: Any,
-        fieldValue: String
-    ) {
-        val data = country::class.java.getDeclaredField(fieldValue)
-        if (data.trySetAccessible()) {
-            data.set(country, valueAfterChange)
-            countryRepoAggregator.saveAll(arrayListOf(country))
-        }
-    }
+        fun getCountryByAlpha2(
+            alpha2Code: String,
+            apisAccessLogId: String
+        ): Country? {
 
-    fun getCountryByAlpha2(alpha2Code: String, apisAccessLogId: String): Country? {
-        val countryResponse = countryRepoAggregator.findByAlpha2AndDataStatus(
-            alpha2Code
-        )
-
-        if (countryResponse.data.isEmpty()) {
-            return null
-        }
-        return countryResponse.data[0]
-    }
+        }*/
 }

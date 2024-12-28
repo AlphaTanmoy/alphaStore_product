@@ -11,8 +11,7 @@ data class CopyProduct (
     var productMainCategory: ProductMainCategory,
     var productSubCategory: ProductSubCategory,
     var merchantId: String,
-    var batchId: String,
-    var uniqueProductId: String,
+    var batchGroup: String,
     var id: String,
     var companyName: String
 )

@@ -30,8 +30,7 @@ class ProductController (
             productMainCategory = copyProduct.productMainCategory,
             productSubCategory = copyProduct.productSubCategory,
             merchantId = copyProduct.merchantId,
-            batchId = copyProduct.batchId,
-            uniqueProductId = copyProduct.uniqueProductId,
+            batchGroup = copyProduct.batchGroup,
             companyName = copyProduct.companyName
         )
 

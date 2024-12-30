@@ -67,7 +67,7 @@ class EnumController {
         return PaginationResponse(data = toRet)
     }
 
-    @GetMapping("/enums/fataStatus")
+    @GetMapping("/enums/dataStatus")
     fun getDataStatus(): PaginationResponse<EnumOption>{
         val toRet: ArrayList<EnumOption> = ArrayList()
         DataStatus.entries.forEach {

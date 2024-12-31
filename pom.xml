@@ -17,8 +17,14 @@
 		<java.version>17</java.version>
 		<kotlin.version>1.9.25</kotlin.version>
 		<spring-cloud.version>2023.0.3</spring-cloud.version>
+		<custom-lib-config-service.version>0.0.1-SNAPSHOT</custom-lib-config-service.version>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>com.alphaStore</groupId>
+			<artifactId>config-server</artifactId>
+			<version>${custom-lib-config-service.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
@@ -55,7 +61,24 @@
 			<groupId>org.jetbrains.kotlin</groupId>
 			<artifactId>kotlin-stdlib</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-reload4j</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>

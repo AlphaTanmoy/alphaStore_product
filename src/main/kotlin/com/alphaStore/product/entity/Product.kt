@@ -34,10 +34,7 @@ data class Product(
     var merchantId: String = "",
 
     @Column(nullable = false)
-    var batchId: String = "",
-
-    @Column(nullable = false)
-    var uniqueProductId: String = "",
+    var batchGroup: String = "",
 
     @Column(nullable = false)
     var productInStore: Long = 0,

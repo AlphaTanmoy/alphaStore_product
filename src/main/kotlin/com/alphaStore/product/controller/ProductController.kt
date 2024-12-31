@@ -17,10 +17,10 @@ class ProductController (
     private val productService: ProductService
 ) {
 
-    /*@PostMapping("/create")
+    @PostMapping("/create")
     fun createProduct(@RequestBody newProduct: Product): Product {
         return productService.createProduct(newProduct)
-    }*/
+    }
 
     @PostMapping("/save")
     fun saveProduct(@RequestBody copyProduct: CopyProduct): Product {
@@ -30,8 +30,7 @@ class ProductController (
             productMainCategory = copyProduct.productMainCategory,
             productSubCategory = copyProduct.productSubCategory,
             merchantId = copyProduct.merchantId,
-            batchId = copyProduct.batchId,
-            uniqueProductId = copyProduct.uniqueProductId,
+            batchGroup = copyProduct.batchGroup,
             companyName = copyProduct.companyName
         )
 
@@ -44,6 +43,7 @@ class ProductController (
 
     @GetMapping("/getAll")
     fun getAllProducts(
+        @RequestParam("merchantId") merchantID: String? = null,
         @RequestParam("queryString") queryString: String? = null,
         @RequestParam("isActive") isActive: Boolean? = null,
         @RequestParam("offsetToken") offsetToken: String? = null,
@@ -55,6 +55,12 @@ class ProductController (
         @RequestParam("giveData", defaultValue = "true") giveData: Boolean = true,
     ): PaginationResponse<ProductListMinifiedImpl> {
         val toRetFilterOption: ArrayList<FilterOption> = ArrayList()
+
+        var merchantIdPresent = "%"
+        merchantID?.let { obj->
+            toRetFilterOption.add(FilterOption("merchantId", obj, obj))
+            merchantIdPresent = obj.split(',').joinToString("|") { URLDecoder.decode(it, "UTF-8") }
+        }
 
         var queryStringFinal = "%"
         queryString?.let { obj ->
@@ -96,6 +102,7 @@ class ProductController (
         }
 
         val resultFromDb = productService.getProducts(
+            merchantID = merchantIdPresent,
             queryString = queryStringFinal,
             considerMaxDateRange = considerMaxDateRange,
             toRetFilterOption = toRetFilterOption,

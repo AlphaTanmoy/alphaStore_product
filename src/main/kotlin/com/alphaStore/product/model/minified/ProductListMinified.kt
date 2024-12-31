@@ -7,7 +7,7 @@ interface ProductListMinified {
     var id: String
     var productName: String
     var productPrice: Int
-    var numberOfProductsPresentAtStore: Int
+    var productsInStore: Int
     var productMainCategory: String?
     var productSubCategory: String?
     var createdDate: Instant
